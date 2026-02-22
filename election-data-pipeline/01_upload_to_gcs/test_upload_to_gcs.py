@@ -11,9 +11,6 @@ upload_to_gcs.py unit test
 from unittest import mock
 from unittest.mock import patch, MagicMock
 
-from numpy import isin
-from sqlalchemy.engine import result
-
 # 3rd party
 import pytest
 import pandas as pd
