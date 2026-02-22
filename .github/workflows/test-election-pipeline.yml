@@ -1,0 +1,56 @@
+name: Test Eelection Data Pipeline
+
+# election-data-pipeline/ 配下の変更時のみ実行
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'election-data-pipeline/**' # このディレクトリ配下の変更のみ
+      - '.github/workflows/test-election-pipeline.yml'  # このワークフローの変更もトリガーに設定
+  pull_request:
+    branches: [main]
+    paths:
+      - 'election-data-pipeline/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # election-data-pipeline/ ディレクトリに移動してから実行
+      - name: Install dependencies
+        run: |
+          cd election-data-pipeline/01_upload_to_gcs
+          python -m pip Install --upgrade pip
+          pip Install -r requirements.txt
+          pip Install pytest pytest-cov
+
+      - name: Run tests
+        run: |
+          cd election-data-pipeline/01_upload_to_gcs
+          pytest test_upload_to_gcs.py -v --cov=upload_to_gcs --cov-report=term-missing
+
+      - name: Run tests
+        run: |
+          cd election-data-pipeline/01_upload_to_gcs
+          pytest test_upload_to_gcs.py -v --cov=upload_to_gcs --cov-report=term-missing
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          cd election-data-pipeline/01_upload_to_gcs
+          flake8 upload_to_gcs.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 upload_to_gcs.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
