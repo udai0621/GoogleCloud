@@ -33,13 +33,13 @@ jobs:
       - name: Install dependencies
         run: |
           cd election-data-pipeline/01_upload_to_gcs
-          python -m pip Install --upgrade pip
-          pip Install -r requirements.txt
-          pip Install pytest pytest-cov
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
 
       - name: Run tests
         run: |
-          cd election-data-pipeline/01_upload_to_gcs
+          cd:election-data-pipeline/01_upload_to_gcs
           pytest test_upload_to_gcs.py -v --cov=upload_to_gcs --cov-report=term-missing
 
       - name: Run tests
