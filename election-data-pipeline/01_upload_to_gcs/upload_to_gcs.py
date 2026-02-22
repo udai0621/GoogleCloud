@@ -32,10 +32,8 @@
 # ==================================================
 
 # Standard
-from math import log
 import os
 import logging
-from pandas.core.generic import gc
 import requests
 from datetime import datetime
 from typing import List, Dict
@@ -43,8 +41,6 @@ from typing import List, Dict
 # 3rd party
 import pandas as pd
 from google.cloud import storage
-from scipy.sparse import data
-from sqlalchemy.sql.ddl import exc
 
 
 # ==================================================
