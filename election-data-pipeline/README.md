@@ -40,7 +40,6 @@ graph LR
   style E fill:#e8f5e9
   style F fill:#f3e5f5
 ```
-```
 
 ## データソース
 
