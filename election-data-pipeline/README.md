@@ -7,32 +7,39 @@ GCP Professional Data Engineer 試験の学習を目的とした、衆議院議�
 
 ## プロジェクト概要
 
+```mermaid
+graph LR
+  subgraph "Data Source"
+    A[矢内先生の<br>公開データ<br>CSV]
+  end
+  
+  subgraph "01. Data Ingestion"
+    B[Python Script<br>upload_to_gcs.py]
+    C[(Cloud Storage<br>raw/)]
+  end
+
+  subgraph "02. Data Processing"
+    D[Dataflow<br>Apache Beam]
+    E[(BigQuery<br>Tables)]
+  end
+
+  subgraph "Q3. Visualization"
+    F[Looker Studio<br>Dashboard]
+  end
+
+  A -->|HTTP Download| B
+  B -->|Upload CSV| C
+  C -->|Read| D
+  D -->|Transform & Load| E
+  E -->|Query| F
+  
+  style A fill:#e1f5ff
+  style B fill:#fff4e1
+  style C fill:#e8f5e9
+  style D fill:#fff4e1
+  style E fill:#e8f5e9
+  style F fill:#f3e5f5
 ```
-┌─────────────────┐
-│ 矢内先生の      │
-│ 公開データ      │
-│ (CSV)           │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 01. データ取得  │
-│ (Python)        │
-│ ↓ GCS           │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 02. データ変換  │
-│ (Dataflow)      │
-│ ↓ BigQuery      │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ 03. 可視化      │
-│ (Looker Studio) │
-└─────────────────┘
 ```
 
 ## データソース
@@ -57,28 +64,20 @@ https://yukiyanai.github.io/resources/
 ## ディレクトリ構成
 
 ```tree
-```
-GoogleCloud/                                    ← Gitリポジトリのルート
-├── .git/
-├── .github/
-│   └── workflows/
-│       └── test-election-pipeline.yml         ← 選挙データパイプライン用
-├── .gitignore                                 ← ルート全体の設定
-├── README.md                                  ← 全体の目次
-│
-└── election-data-pipeline/                    ← 個別プロジェクト
-    ├── README.md                              ← このプロジェクトの詳細説明
-    ├── 01_upload_to_gcs/
-    │   ├── upload_to_gcs.py
-    │   ├── test_upload_to_gcs.py
-    │   ├── requirements.txt
-    │   └── README.md
-    ├── 02_dataflow_pipeline/                  ← 今後作成
-    └── 03_bigquery/                           ← 今後作成
+GoogleCloud/
+├── election-data-pipeline/
+│   ├── 01_upload_to_gcs
+│   │   ├── README.md
+│   │   ├── requirements.txt
+│   │   ├── test_upload_to_gcs.py
+│   │   └── upload_to_gcs.py
+│   ├── 02_dataflow_pipeline
+│   ├── 03_bigquery
+│   ├── 04_visualization
+│   └── README.md
+└── README.md
 ```
 
-
-```
 ## セットアップ
 
 ### 1. GCP プロジェクトの準備
@@ -146,8 +145,3 @@ pytest test_upload_to_gcs.py -v
 **データ出典**:  
 矢内勇生「第50回衆議院議員総選挙データ」  
 https://yukiyanai.github.io/jp/resources/data/hr2024election.html
-
-## 作成者
-
-Yokoyama
-
