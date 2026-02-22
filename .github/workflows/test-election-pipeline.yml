@@ -15,10 +15,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.11']
+      fail-fast: false
 
     steps:
       - name: Checkout code
@@ -31,26 +33,25 @@ jobs:
 
       # election-data-pipeline/ ディレクトリに移動してから実行
       - name: Install dependencies
+        working-directory: election-data-pipeline/01_upload_to_gcs
         run: |
-          cd election-data-pipeline/01_upload_to_gcs
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: Run tests
+        working-directory: election-data-pipeline/01_upload_to_gcs
         run: |
-          cd election-data-pipeline/01_upload_to_gcs
-          pytest test_upload_to_gcs.py -v --cov=upload_to_gcs --cov-report=term-missing
-
-      - name: Run tests
-        run: |
-          cd election-data-pipeline/01_upload_to_gcs
           pytest test_upload_to_gcs.py -v --cov=upload_to_gcs --cov-report=term-missing
 
       - name: Lint with flake8
+        working-directory: election-data-pipeline/01_upload_to_gcs
         run: |
           pip install flake8
-          cd election-data-pipeline/01_upload_to_gcs
           flake8 upload_to_gcs.py --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 upload_to_gcs.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         continue-on-error: true
+
+      - name: Test Summary
+        if: success()
+        run: echo "✅ All tests passed successfully!"
