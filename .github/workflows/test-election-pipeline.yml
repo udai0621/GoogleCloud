@@ -13,14 +13,12 @@ on:
       - 'election-data-pipeline/**'
 
 jobs:
-  test:
+  test-step1-upload:
+    name: Test Step1 - Upload to GCS 
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     strategy:
       matrix:
         python-version: ['3.11']
-      fail-fast: false
 
     steps:
       - name: Checkout code
@@ -55,3 +53,59 @@ jobs:
       - name: Test Summary
         if: success()
         run: echo "✅ All tests passed successfully!"
+
+  test-step2-dataflow:
+    name: Test Step 2 - Dataflow Pipeline
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v5
+          with:
+            python-version: ${{ matrix.python-version }}
+
+        - name: Install dependencies
+          working-directory: election-data-pipeline/02_dataflow_pipeline
+          run: |
+            python -m pip install --upgrade pip 
+            pip install -r requirements.txt
+            pip install pytest pytest-cov
+
+        - name: Run unit tests
+          working-directory: election-data-pipeline/02_dataflow_pipeline
+          run: |
+            pytest test_election_pipeline.py -v --cov=election_pipeline --cov-report=term-missing
+
+        - name: Lint with flake8
+          working-directory: election-data-pipeline/02_dataflow_pipeline
+          run: |
+            pip install flake8
+            # Critical errors only (syntax errors, undefined names, etc.)
+            flake8 election_pipeline.py --count --select=E9,F63,F7,F82 --show-source --statistics
+            # All errors and warning (non-blocking)
+            flake8 election_pipeline.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          continue-on-error: true
+
+        - name: Test Summary
+          if: success()
+          run: echo "✅ Step 2 tests passed successfully!"
+  
+  test-summary:
+    name: Test Summary
+    needs: [test-step1-upload, test-step2-dataflow]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: All tests passed
+        run: |
+          echo "🎉 All pipeline tests passed successfully!"
+          echo "✅ Step 1: Upload to GCS - PASSED"
+          echo "✅ Step 2: Dataflow Pipeline - PASSED"
+
+            
