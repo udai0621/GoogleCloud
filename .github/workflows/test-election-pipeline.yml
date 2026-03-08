@@ -61,40 +61,40 @@ jobs:
       matrix:
         python-version: ['3.11']
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Set up Python ${{ matrix.python-version }}
-          uses: actions/setup-python@v5
-          with:
-            python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-        - name: Install dependencies
-          working-directory: election-data-pipeline/02_dataflow_pipeline
-          run: |
-            python -m pip install --upgrade pip 
-            pip install -r requirements.txt
-            pip install pytest pytest-cov
+      - name: Install dependencies
+        working-directory: election-data-pipeline/02_dataflow_pipeline
+        run: |
+          python -m pip install --upgrade pip 
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
 
-        - name: Run unit tests
-          working-directory: election-data-pipeline/02_dataflow_pipeline
-          run: |
-            pytest test_election_pipeline.py -v --cov=election_pipeline --cov-report=term-missing
+      - name: Run unit tests
+        working-directory: election-data-pipeline/02_dataflow_pipeline
+        run: |
+          pytest test_election_pipeline.py -v --cov=election_pipeline --cov-report=term-missing
 
-        - name: Lint with flake8
-          working-directory: election-data-pipeline/02_dataflow_pipeline
-          run: |
-            pip install flake8
-            # Critical errors only (syntax errors, undefined names, etc.)
-            flake8 election_pipeline.py --count --select=E9,F63,F7,F82 --show-source --statistics
-            # All errors and warning (non-blocking)
-            flake8 election_pipeline.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-          continue-on-error: true
+      - name: Lint with flake8
+        working-directory: election-data-pipeline/02_dataflow_pipeline
+        run: |
+          pip install flake8
+          # Critical errors only (syntax errors, undefined names, etc.)
+          flake8 election_pipeline.py --count --select=E9,F63,F7,F82 --show-source --statistics
+          # All errors and warning (non-blocking)
+          flake8 election_pipeline.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
 
-        - name: Test Summary
-          if: success()
-          run: echo "✅ Step 2 tests passed successfully!"
+      - name: Test Summary
+        if: success()
+        run: echo "✅ Step 2 tests passed successfully!"
   
   test-summary:
     name: Test Summary
