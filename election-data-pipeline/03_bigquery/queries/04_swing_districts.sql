@@ -63,4 +63,4 @@ HAVING
 ORDER BY 
   election_year DESC,
   vote_margin ASC  -- 得票差が小さい順（激戦区）
-
+LIMIT 50
