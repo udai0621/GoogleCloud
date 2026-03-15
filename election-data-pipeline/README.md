@@ -72,7 +72,7 @@ GoogleCloud/
 │   │   └── upload_to_gcs.py
 │   ├── 02_dataflow_pipeline
 │   ├── 03_bigquery
-│   ├── 04_visualization
+│   ├── 04_looker_studio
 │   └── README.md
 └── README.md
 ```
@@ -135,7 +135,7 @@ pytest test_upload_to_gcs.py -v
 | 01_upload_to_gcs | データ取り込み設計 | GCS, Python, バッチ処理 |
 | 02_dataflow_pipeline | データ処理システムの構築 | Dataflow, Apache Beam, ETL |
 | 03_bigquery | データ分析の運用 | BigQuery, スキーマ設計, SQL |
-| 04_visualization | データの可視化 | Looker Studio, ダッシュボード設計 |
+| 04_looker_studio | データの可視化 | Looker Studio, ダッシュボード設計 |
 
 ## ライセンス
 
